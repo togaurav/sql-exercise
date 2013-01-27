@@ -1,5 +1,8 @@
+-- dbext:type=SQLITE:dbname=movie_rating.db
+
 -- Question 1
 -- For each movie, return the title and the 'rating spread', that is, the difference between highest and lowest ratings given to that movie. Sort by rating spread from highest to lowest, then by movie title. 
+Rating
 
 -- Question 2
 -- Find the difference between the average rating of movies released before 1980 and the average rating of movies released after 1980. (Make sure to calculate the average rating for each movie, then the average of those averages for movies before 1980 and movies after. Don't just calculate the overall average rating before and after 1980.) 
