@@ -53,34 +53,57 @@ order by Movie.director, Movie.title
 -- Question 4
 -- Find the movie(s) with the highest average rating. Return the movie title(s) and average rating. 
 -- (Hint: This query is more difficult to write in SQLite than other systems; you might think of it as finding the highest average rating and then choosing the movie(s) with that average rating.) 
-select Movie.title, max(group_avg) as max_avg
+select title, group_avg
 from Movie, (
+  select max(group_avg) as max_avg
+  from Movie, (
+    select Movie.mID, avg(stars) as group_avg
+    from Rating, Movie
+    where Rating.mID = Movie.mID
+    group by Rating.mID
+  ) as GroupRating
+  where GroupRating.mID = Movie.mID
+) as MaxRating,
+(
   select Movie.mID, avg(stars) as group_avg
   from Rating, Movie
   where Rating.mID = Movie.mID
   group by Rating.mID
-) as MaxRating
-where MaxRating.mID = Movie.mID
+) as GroupRating
+where GroupRating.group_avg = MaxRating.max_avg
+and Movie.mID = GroupRating.mID
 ;
+
 
 -- Question 5
 -- Find the movie(s) with the lowest average rating. Return the movie title(s) and average rating. 
 -- (Hint: This query may be more difficult to write in SQLite than other systems; you might think of it as finding the highest average rating and then choosing the movie(s) with that average rating.)
-select Movie.title, min(group_avg) as min_avg
+select title, group_avg
 from Movie, (
+  select min(group_avg) as min_avg
+  from Movie, (
+    select Movie.mID, avg(stars) as group_avg
+    from Rating, Movie
+    where Rating.mID = Movie.mID
+    group by Rating.mID
+  ) as GroupRating
+  where GroupRating.mID = Movie.mID
+) as minRating,
+(
   select Movie.mID, avg(stars) as group_avg
   from Rating, Movie
   where Rating.mID = Movie.mID
   group by Rating.mID
-) as MaxRating
-where MaxRating.mID = Movie.mID
+) as GroupRating
+where GroupRating.group_avg = minRating.min_avg
+and Movie.mID = GroupRating.mID
 ;
 
 -- Question 6
 -- For each director, return the director's name together with the title(s) of the movie(s) they directed that received the highest rating among all of their movies, and the value of that rating. Ignore movies whose director is NULL. 
-select director, max(avg_star) as max_avg_star
+select director, title, max_star
 from (
-  select title, avg(stars) as avg_star, director
+  select title, max(stars) as max_star, director
   from Movie, Rating
   where Movie.mID = Rating.mID and director is not NULL
   group by title
