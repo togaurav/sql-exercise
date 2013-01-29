@@ -32,9 +32,7 @@ order by name
 -- Question 4
 -- Find the titles of all movies not reviewed by Chris Jackson.
 select distinct title
-from Reviewer, Movie, Rating
-where Reviewer.rID = Rating.rID 
-and Rating.mID = Movie.mID
+from Movie
 except
 select distinct title
 from Reviewer, Movie, Rating
